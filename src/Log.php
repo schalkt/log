@@ -324,8 +324,6 @@ class Log
 	public function flush()
 	{
 		
-		//$this->setPath();
-
 		if (file_exists($this->config['folder'])) {
 			$this->rrmdir($this->config['folder']);
 		}
@@ -341,15 +339,17 @@ class Log
 	protected function rrmdir($dir)
 	{
 
-		$it = new RecursiveDirectoryIterator($dir, FilesystemIterator::SKIP_DOTS);
-		$it = new RecursiveIteratorIterator($it, RecursiveIteratorIterator::CHILD_FIRST);
+		$iterator = new RecursiveDirectoryIterator($dir, FilesystemIterator::SKIP_DOTS);
+		$iterator = new RecursiveIteratorIterator($iterator, RecursiveIteratorIterator::CHILD_FIRST);
 
-		foreach ($it as $file) {
+		foreach ($iterator as $file) {
+
 			if ($file->isDir()) {
 				rmdir($file->getPathname());
 			} else {
 				unlink($file->getPathname());
 			}
+			
 		}
 
 		rmdir($dir);
