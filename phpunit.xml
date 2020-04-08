@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<phpunit 
+        bootstrap="tests/bootstrap.php"
+        backupGlobals="false"
+        backupStaticAttributes="false"         
+        convertErrorsToExceptions="true"
+        convertNoticesToExceptions="true"
+        convertWarningsToExceptions="true"
+        processIsolation="false"
+        stopOnFailure="true"
+        stopOnError="true"
+        colors="true">
+    <testsuites>
+        <testsuite name="Log test suite">
+            <file>./tests/LogTest.php</file>
+        </testsuite>
+    </testsuites>
+</phpunit>
