@@ -54,6 +54,18 @@ class Log
 	}
 
 	/**
+	 * Update default config
+	 *
+	 * @return void
+	 */
+	public static function configDefault($config = [])
+	{
+
+		self::$defaultConfig = array_replace_recursive(self::$defaultConfig, $config);
+
+	}
+
+	/**
 	 * Reset configs
 	 *
 	 * @return void
@@ -349,7 +361,7 @@ class Log
 			} else {
 				unlink($file->getPathname());
 			}
-			
+
 		}
 
 		rmdir($dir);
