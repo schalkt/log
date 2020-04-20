@@ -24,7 +24,7 @@ class Log
 	protected static $configsPath;
 	protected static $defaultConfig = [
 		"folder" => './logs/default',
-		"folder_chmod" => 770,
+		"folder_chmod" => 0770,
 		"pattern_file" => "/{YEAR}-{MONTH}/{TYPE}-{YEAR}-{MONTH}-{DAY}.log",
 		"pattern_row" => "{DATE} | {STATUS} --- {MESSAGE}",
 		"format_date" => 'Y-m-d H:i:s',
