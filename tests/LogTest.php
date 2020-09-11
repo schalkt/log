@@ -7,10 +7,10 @@ use Schalkt\Slog\Log;
 
 final class LogTest extends TestCase
 {
-		
+
 	public function testDefaultInfo()
 	{
-		
+
 		// delete default log folder
 		Log::type()->flush();
 
@@ -29,12 +29,11 @@ final class LogTest extends TestCase
 
 		// is logfile content correct?
 		$this->assertTrue(strpos($log, ' | INFO --- Test info') === 19);
-	
 	}
 
 	public function testDefaultError()
 	{
-		
+
 		// delete default log folder
 		Log::type()->flush();
 
@@ -53,12 +52,11 @@ final class LogTest extends TestCase
 
 		// is logfile content correct?
 		$this->assertTrue(strpos($log, ' | ERROR --- Test error') === 19);
-	
 	}
 
 	public function testCustomWarning()
 	{
-		
+
 		// delete default log folder
 		Log::type()->flush();
 
@@ -82,14 +80,13 @@ final class LogTest extends TestCase
 
 		// is logfile content correct?
 		$this->assertTrue(strpos($log, ' ### WARNING ### Test warning') === 19);
-	
 	}
 
 	public function testLoadConfigAndCSV()
 	{
-		
+
 		// load config
-		Log::configs( __DIR__ . '/config.php');
+		Log::configs(__DIR__ . '/config.php');
 
 		// delete csv log folder
 		Log::type('csv')->flush();
@@ -109,8 +106,6 @@ final class LogTest extends TestCase
 
 		// is logfile content correct?
 		$this->assertTrue(strpos($log, '"date";"message";"class";"function"') === 0);
-		$this->assertTrue(strpos($log, ';CSV message;') === 58);
-			
+		$this->assertTrue(strpos($log, ';CSV message;') === 57);
 	}
-
-} 
+}

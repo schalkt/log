@@ -11,10 +11,12 @@
     ],
     "type": "library",
     "license": "MIT",
-    "authors": [{
-        "name": "Tamas Schalk",
-        "homepage": "https://github.com/schalkt"
-    }],
+    "authors": [
+        {
+            "name": "Tamas Schalk",
+            "homepage": "https://github.com/schalkt"
+        }
+    ],
     "require": {
         "php": ">=5.4.0"
     },
@@ -30,5 +32,10 @@
         "psr-4": {
             "Schalkt\\Slog\\Tests\\": "tests"
         }
+    },
+    "scripts": {
+        "test": [
+            "./vendor/bin/phpunit"
+        ]
     }
 }

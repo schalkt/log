@@ -50,7 +50,6 @@ class Log
 
 		self::$configs = [];
 		self::$configsPath = $configsPath;
-
 	}
 
 	/**
@@ -62,7 +61,6 @@ class Log
 	{
 
 		self::$defaultConfig = array_replace_recursive(self::$defaultConfig, $config);
-
 	}
 
 	/**
@@ -75,14 +73,13 @@ class Log
 
 		self::$configs = [];
 		self::$configsPath = null;
-
 	}
 
 	/**
 	 * Set log type and return with new Log class
 	 *
 	 * @param string $type
-	 * @return void
+	 * @return Log
 	 */
 	public static function type($type = 'default', $config = [])
 	{
@@ -92,7 +89,7 @@ class Log
 		}
 
 		if (empty(self::$configs)) {
-		
+
 			if (file_exists(self::$configsPath)) {
 				self::$configs = require(self::$configsPath);
 			}
@@ -335,13 +332,12 @@ class Log
 	 */
 	public function flush()
 	{
-		
+
 		if (file_exists($this->config['folder'])) {
 			$this->rrmdir($this->config['folder']);
 		}
-			
 	}
-	
+
 	/**
 	 * Recursive folder delete
 	 *
@@ -361,10 +357,8 @@ class Log
 			} else {
 				unlink($file->getPathname());
 			}
-
 		}
 
 		rmdir($dir);
-
 	}
 }

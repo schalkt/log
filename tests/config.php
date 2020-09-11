@@ -1,6 +1,6 @@
 <?php
 
-return [   	
+return [
 	"csv" => [
 		"folder" => './logs',
 		"header" => '"date";"message";"class";"function"',
