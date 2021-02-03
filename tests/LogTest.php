@@ -86,7 +86,7 @@ final class LogTest extends TestCase
 	{
 
 		// load config
-		Log::configs(__DIR__ . '/config.php');
+		Log::configs(__DIR__ . '/logs-config.php');
 
 		// delete csv log folder
 		Log::type('csv')->flush();
