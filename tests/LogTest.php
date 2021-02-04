@@ -28,7 +28,7 @@ final class LogTest extends TestCase
 		$log = file_get_contents($logFile);
 
 		// is logfile content correct?
-		$this->assertTrue(strpos($log, ' | INFO --- Test info') === 19);
+		$this->assertSame(19, strpos($log, ' | INFO --- Test info'));
 	}
 
 	public function testDefaultError()
@@ -51,7 +51,7 @@ final class LogTest extends TestCase
 		$log = file_get_contents($logFile);
 
 		// is logfile content correct?
-		$this->assertTrue(strpos($log, ' | ERROR --- Test error') === 19);
+		$this->assertSame(19, strpos($log, ' | ERROR --- Test error'));
 	}
 
 	public function testCustomWarning()
@@ -79,7 +79,7 @@ final class LogTest extends TestCase
 		$log = file_get_contents($logFile);
 
 		// is logfile content correct?
-		$this->assertTrue(strpos($log, ' ### WARNING ### Test warning') === 19);
+		$this->assertSame(19, strpos($log, ' ### WARNING ### Test warning'));
 	}
 
 	public function testLoadConfigAndCSV()
@@ -105,7 +105,7 @@ final class LogTest extends TestCase
 		$log = file_get_contents($logFile);
 
 		// is logfile content correct?
-		$this->assertTrue(strpos($log, '"date";"message";"class";"function"') === 0);
-		$this->assertTrue(strpos($log, ';CSV message;') === 57);
+		$this->assertSame(0, strpos($log, '"date";"message";"class";"function"'));
+		$this->assertSame(57, strpos($log, ';CSV message;'));
 	}
 }
