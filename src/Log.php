@@ -45,7 +45,7 @@ class Log
 	{
 
 		if (empty($configsPath)) {
-			throw new \Exception('Invalid path of configs');
+			throw new LogException('Invalid path of configs');
 		}
 
 		self::$configs = [];
@@ -85,7 +85,7 @@ class Log
 	{
 
 		if (empty($type)) {
-			throw new \Exception('Empty config type');
+			throw new LogException('Empty config type');
 		}
 
 		if (empty(self::$configs)) {
@@ -95,7 +95,7 @@ class Log
 			}
 
 			if (!is_array(self::$configs)) {
-				throw new \Exception('Invalid configs');
+				throw new LogException('Invalid configs');
 			}
 
 			if (!empty(self::$configs['default'])) {
@@ -106,7 +106,7 @@ class Log
 		}
 
 		if (empty(self::$configs[$type])) {
-			self::$configs[$type] = self::$configs['default'];
+			throw new LogException('Invalid config type');			
 		}
 
 		self::$configs[$type] = array_replace_recursive(self::$configs['default'], self::$configs[$type], $config);

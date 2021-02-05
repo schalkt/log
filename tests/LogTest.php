@@ -8,6 +8,28 @@ use Schalkt\Slog\Log;
 final class LogTest extends TestCase
 {
 
+	/**
+	 * exceptionTest
+	 *
+	 * @param  mixed $method
+	 * @param  mixed $msg
+	 * @return void
+	 */
+	protected function exceptionTest($method, $errorMessage)
+	{
+
+		try {
+			$method();
+		} catch (\Exception $e) {
+			$this->assertSame($errorMessage, $e->getMessage());
+		}
+	}
+
+	/**
+	 * testDefaultInfo
+	 *
+	 * @return void
+	 */
 	public function testDefaultInfo()
 	{
 
@@ -31,6 +53,11 @@ final class LogTest extends TestCase
 		$this->assertSame(19, strpos($log, ' | INFO --- Test info'));
 	}
 
+	/**
+	 * testDefaultError
+	 *
+	 * @return void
+	 */
 	public function testDefaultError()
 	{
 
@@ -54,6 +81,11 @@ final class LogTest extends TestCase
 		$this->assertSame(19, strpos($log, ' | ERROR --- Test error'));
 	}
 
+	/**
+	 * testCustomWarning
+	 *
+	 * @return void
+	 */
 	public function testCustomWarning()
 	{
 
@@ -66,11 +98,11 @@ final class LogTest extends TestCase
 		];
 
 		// default config
-		Log::type('payment', $config)->warning('Test warning');
+		Log::type('default', $config)->warning('Test warning');
 
 		// concat logfile path
 		$logPath = dirname(__DIR__) . DIRECTORY_SEPARATOR . 'logs' . DIRECTORY_SEPARATOR . 'default' . DIRECTORY_SEPARATOR;
-		$logFile = $logPath . date('Y') . '-' . date('m') . DIRECTORY_SEPARATOR . 'payment-' . date('Y-m-d') . '-WARNING.log';
+		$logFile = $logPath . date('Y') . '-' . date('m') . DIRECTORY_SEPARATOR . 'default-' . date('Y-m-d') . '-WARNING.log';
 
 		// is logfile exists?
 		$this->assertTrue(file_exists($logFile));
@@ -82,6 +114,11 @@ final class LogTest extends TestCase
 		$this->assertSame(19, strpos($log, ' ### WARNING ### Test warning'));
 	}
 
+	/**
+	 * testLoadConfigAndCSV
+	 *
+	 * @return void
+	 */
 	public function testLoadConfigAndCSV()
 	{
 
@@ -107,5 +144,27 @@ final class LogTest extends TestCase
 		// is logfile content correct?
 		$this->assertSame(0, strpos($log, '"date";"message";"class";"function"'));
 		$this->assertSame(57, strpos($log, ';CSV message;'));
+	}
+
+
+	/**
+	 * testExceptions
+	 *
+	 * @return void
+	 */
+	public function testExceptions()
+	{
+
+		$this->exceptionTest(function () {
+			Log::configs("");
+		}, "Invalid path of configs");
+
+		$this->exceptionTest(function () {
+			Log::type("");
+		}, "Empty config type");
+
+		$this->exceptionTest(function () {
+			Log::type("defalt")->debug(['param1' => 1], 'Parameters');
+		}, "Invalid config type");
 	}
 }
