@@ -165,6 +165,6 @@ final class LogTest extends TestCase
 
 		$this->exceptionTest(function () {
 			Log::type("defalt")->debug(['param1' => 1], 'Parameters');
-		}, "Invalid config type");
+		}, "Invalid config type: defalt");
 	}
 }

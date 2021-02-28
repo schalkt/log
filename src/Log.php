@@ -111,8 +111,8 @@ class Log
 			}
 		}
 
-		if (empty(self::$configs[$type])) {
-			throw new LogException('Invalid config type');			
+		if (!isset(self::$configs[$type])) {
+			throw new LogException('Invalid config type: ' . $type);			
 		}
 
 		self::$configs[$type] = array_replace_recursive(self::$configs['default'], self::$configs[$type], $config);
