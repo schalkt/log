@@ -36,20 +36,26 @@ class Log
 	protected $status = self::INFO;
 
 	/**
-	 * Set the config file path
+	 * Set the configs by config file path or configs array
 	 *
-	 * @param string $configsPath
+	 * @param mixed $configs
 	 * @return void
 	 */
-	public static function configs($configsPath)
+	public static function configs($configs)
 	{
 
-		if (empty($configsPath)) {
+		if (empty($configs)) {
 			throw new LogException('Invalid path of configs');
 		}
 
-		self::$configs = [];
-		self::$configsPath = $configsPath;
+		if (is_array($configs)) {
+			self::$configs = $configs;
+			self::$configsPath = null;
+		} else {
+			self::$configs = [];
+			self::$configsPath = $configs;			
+		}
+
 	}
 
 	/**

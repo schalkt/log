@@ -107,3 +107,7 @@ return [
 - {DAY} <- date('d')
 - {HOUR} <- date('H')
 - {MIN} <- date('i')
+
+## Todo
+
+- configurable output (STDOUT, STDERR)
