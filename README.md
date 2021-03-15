@@ -1,6 +1,6 @@
 # Simple and easy configurable PHP log system
 
-I decided to write my own log engine, which already has a basic and automatic rotation. Plus, with a simple pattern change, I can write to CSV. And of course, objects and arrays are automatically converted to prettified JSON. So cool :)
+I decided to write my own log engine, which already has a basic and automatic rotation. Plus, with a simple pattern change, I can write to CSV. And of course, objects and arrays are automatically converted to prettified JSON.
 
 [![Latest Stable Version](https://poser.pugx.org/schalkt/log/v)](//packagist.org/packages/schalkt/log) [![Total Downloads](https://poser.pugx.org/schalkt/log/downloads)](//packagist.org/packages/schalkt/log) [![License](https://poser.pugx.org/schalkt/log/license)](//packagist.org/packages/schalkt/log)
 [![GitHub issues](https://img.shields.io/github/issues/schalkt/log.svg?style=flat-square)](https://github.com/schalkt/log/issues)
@@ -45,7 +45,7 @@ I decided to write my own log engine, which already has a basic and automatic ro
 
     require_once '/vendor/autoload.php';
 
-    Log::default(["folder" => './logs']);
+    Log::default(["folder" => './testlogs']);
     Log::to()->info('Hello World!');
 
 ```
@@ -123,5 +123,4 @@ return [
 
 ## Todo
 
-- Log::to('login')->info(...);
 - configurable output (STDOUT, STDERR)
