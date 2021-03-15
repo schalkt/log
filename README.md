@@ -20,8 +20,18 @@ I decided to write my own log engine, which already has a basic and automatic ro
 
 - pattern based logfile path: `/{TYPE}/{YEAR}/{YEAR}-{MONTH}/{TYPE}-{MONTH}-{DAY}`
 - pattern based rows: `{DATE} | {STATUS} --- {MESSAGE}`
-- CSV row pattern: `'"{DATE}";{MESSAGE};"{BACKTRACE.CLASS}";"{BACKTRACE.FUNCTION}"'`
-- objects and arrays convert to prettified JSON automatically
+- detect message type and objects and arrays converted to prettified JSON automatically
+- customizable CSV row pattern: `'"{DATE}";{MESSAGE};"{BACKTRACE.CLASS}";"{BACKTRACE.FUNCTION}"'`
+
+## Available types
+
+- `Log::to()->info($message, $title = null);`
+- `Log::to()->error($message, $title = null);`
+- `Log::to()->critical($message, $title = null);`
+- `Log::to()->warning($message, $title = null);`
+- `Log::to()->notice($message, $title = null);`
+- `Log::to()->debug($message, $title = null);`
+- `Log::to()->exception(\Exception $ex, $title = null);`
 
 ## Examples
 
@@ -50,7 +60,26 @@ I decided to write my own log engine, which already has a basic and automatic ro
 
 ```
 
-### Load custom configs
+### Add new config
+
+```php
+
+    use Schalkt\Slog\Log;
+
+    require_once '/vendor/autoload.php';
+
+    Log::config('import', [
+        'folder' => '.' . self::DS . 'logs/import',
+        'folder_chmod' => 0700,
+        'pattern_row' => '{DATE} {EOL} {STATUS} {EOL} {MESSAGE} {EOL} {REQUEST}',
+    ]);
+
+    // add an error to the import log
+    Log::to('import')->error('Unique id required');
+
+```
+
+### Load custom configs from file
 
 ```php
 
@@ -105,7 +134,7 @@ return [
 ];
 ```
 
-## Available variables
+## Available variables in patterns
 
 - {MESSAGE} <- first parameter of function (required, string, array, object, any)
 - {TITLE} <- second parameter of function (not required, string or number)
