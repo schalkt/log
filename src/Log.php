@@ -22,7 +22,6 @@ class Log
 	const DS = \DIRECTORY_SEPARATOR;
 
 	protected static $configs = [];
-	protected static $configsPath;
 	protected static $default = [
 		'folder' => '.' . self::DS . 'logs',
 		'folder_chmod' => 0770,
@@ -52,10 +51,46 @@ class Log
 
 		if (is_array($configs)) {
 			self::$configs = $configs;
-			self::$configsPath = null;
 		} else {
-			self::$configs = [];
-			self::$configsPath = $configs;
+
+			if (!\file_exists($configs)) {
+				throw new LogException('Invalid config file path');
+			}
+
+			self::$configs = require($configs);
+
+			if (!\is_array(self::$configs)) {
+				throw new LogException('Invalid config file path');
+			}
+		}
+
+		self::initialize();
+	}
+
+
+	/**
+	 * initialize
+	 *
+	 * @return void
+	 */
+	protected static function initialize()
+	{
+
+		// refresh default config
+		if (isset(self::$configs['default'])) {
+			$default = array_replace_recursive(self::$default, self::$configs['default']);
+			self::$configs['default'] = $default;
+		} else {
+			self::$configs['default'] = self::$default;
+		}
+
+		foreach (self::$configs as $name => $configs) {
+
+			if ($name === 'default') {
+				continue;
+			}
+
+			self::config($name, $configs, self::$configs['default']);
 		}
 	}
 
@@ -63,14 +98,15 @@ class Log
 	/**
 	 * Set config by nem and options
 	 *
-	 * @param  mixed $name
-	 * @param  mixed $options
+	 * @param  string $name
+	 * @param  array $options
+	 * @param  array $default
 	 * @return void
 	 */
-	public static function config($name, $options)
+	public static function config(string $name, array $options, array $default = null)
 	{
-
-		self::$configs[$name] = array_replace_recursive(self::$default, $options);
+		$default = $default ? $default : self::$default;
+		self::$configs[$name] = array_replace_recursive($default, $options);
 	}
 
 
@@ -112,7 +148,6 @@ class Log
 	{
 
 		self::$configs = [];
-		self::$configsPath = null;
 	}
 
 
@@ -143,20 +178,11 @@ class Log
 		}
 
 		if (empty(self::$configs)) {
+			self::$configs['default'] = self::$default;
+		}
 
-			if (file_exists(self::$configsPath)) {
-				self::$configs = require(self::$configsPath);
-			}
-
-			if (!is_array(self::$configs)) {
-				throw new LogException('Invalid configs');
-			}
-
-			if (!empty(self::$configs['default'])) {
-				self::$configs['default'] = array_replace_recursive(self::$default, self::$configs['default']);
-			} else {
-				self::$configs['default'] = self::$default;
-			}
+		if (!isset(self::$configs['default'])) {
+			self::$configs['default'] = self::$default;
 		}
 
 		if (!isset(self::$configs[$type])) {
