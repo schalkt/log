@@ -18,13 +18,24 @@ I decided to write my own log engine, which already has a basic and automatic ro
 
 ## Features
 
-- pattern based logfile path: `{YEAR}/{YEAR}-{MONTH}/{TYPE}-{MONTH}-{DAY}.log`
+- pattern based logfile path: `/{TYPE}/{YEAR}/{YEAR}-{MONTH}/{TYPE}-{MONTH}-{DAY}`
 - pattern based rows: `{DATE} | {STATUS} --- {MESSAGE}`
-- CSV logfile path: `{YEAR}-{MONTH}/{DAY}.csv`
 - CSV row pattern: `'"{DATE}";{MESSAGE};"{BACKTRACE.CLASS}";"{BACKTRACE.FUNCTION}"'`
 - objects and arrays convert to prettified JSON automatically
 
 ## Examples
+
+### Use default config
+
+```php
+
+    use Schalkt\Slog\Log;
+
+    require_once '/vendor/autoload.php';
+
+    Log::to()->info('Hello World!');
+
+```
 
 ### Change default log folder
 
@@ -34,8 +45,8 @@ I decided to write my own log engine, which already has a basic and automatic ro
 
     require_once '/vendor/autoload.php';
 
-    Log::configDefault(["folder" => './logs/default']);
-    Log::type()->info('Hello World!');
+    Log::default(["folder" => './logs']);
+    Log::to()->info('Hello World!');
 
 ```
 
@@ -51,10 +62,10 @@ I decided to write my own log engine, which already has a basic and automatic ro
     Log::configs('./config/logs.php');
 
     // add an error to the default log
-    Log::type()->error('Password required');
+    Log::to()->error('Password required');
 
     // add an input array to the login log with title
-    Log::type('login')->notice($input, 'Invalid password');
+    Log::to('login')->notice($input, 'Invalid password');
 
 ```
 
@@ -67,8 +78,9 @@ return [
     'default' => [
         "folder" => './logs/default',
         "folder_chmod" => 0770,
-        "pattern_file" => "/{YEAR}-{MONTH}/{TYPE}-{YEAR}-{MONTH}-{DAY}.log",
+        "pattern_file" => "/{YEAR}-{MONTH}/{TYPE}-{YEAR}-{MONTH}-{DAY}",
         "pattern_row" => "{DATE} | {STATUS} --- {MESSAGE}",
+        "extension" => "log",
         "format_date" => 'Y-m-d H:i:s',
     ]
 ];
@@ -81,12 +93,13 @@ return [
     "csv" => [
         "folder" => './logs',
         "header" => '"date";"message";"class";"function"',
-        "pattern_file" => "/{TYPE}/{YEAR}-{MONTH}/{TYPE}-{YEAR}-{MONTH}-{DAY}.csv",
+        "pattern_file" => "/{TYPE}/{YEAR}-{MONTH}/{TYPE}-{YEAR}-{MONTH}-{DAY}",
         "pattern_row" => '"{DATE}";{MESSAGE};"{BACKTRACE.CLASS}";"{BACKTRACE.FUNCTION}"',
+        "extension" => "csv",
     ],
     "login" => [
         "folder" => './logs',
-        "pattern_file" => "/logins/{TYPE}/{YEAR}-{MONTH}-{DAY}.log",
+        "pattern_file" => "/logins/{TYPE}/{YEAR}-{MONTH}-{DAY}",
         "pattern_row" => "{DATE} {TITLE} {MESSAGE}",
     ],
 ];
@@ -110,4 +123,5 @@ return [
 
 ## Todo
 
+- Log::to('login')->info(...);
 - configurable output (STDOUT, STDERR)

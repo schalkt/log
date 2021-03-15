@@ -19,18 +19,20 @@ class Log
 	const WARNING = 'WARNING';
 	const CRITICAL = 'CRITICAL';
 	const EXCEPTION = 'EXCEPTION';
+	const DS = \DIRECTORY_SEPARATOR;
 
 	protected static $configs = [];
 	protected static $configsPath;
-	protected static $defaultConfig = [
-		"folder" => './logs/default',
-		"folder_chmod" => 0770,
-		"pattern_file" => "/{YEAR}-{MONTH}/{TYPE}-{YEAR}-{MONTH}-{DAY}.log",
-		"pattern_row" => "{DATE} | {STATUS} --- {MESSAGE}",
-		"format_date" => 'Y-m-d H:i:s',
+	protected static $default = [
+		'folder' => '.' . self::DS . 'logs',
+		'folder_chmod' => 0770,
+		'pattern_file' => self::DS . '{TYPE}' . self::DS . '{YEAR}-{MONTH}' . self::DS . '{TYPE}-{YEAR}-{MONTH}-{DAY}',
+		'pattern_row' => '{DATE} | {STATUS} --- {MESSAGE}',
+		'extension' => 'log',
+		'format_date' => 'Y-m-d H:i:s',
 	];
 
-	protected $type;
+	protected $type = 'default';
 	protected $filepath;
 	protected $config;
 	protected $status = self::INFO;
@@ -45,7 +47,7 @@ class Log
 	{
 
 		if (empty($configs)) {
-			throw new LogException('Invalid path of configs');
+			throw new LogException('Invalid config file path or configs array');
 		}
 
 		if (is_array($configs)) {
@@ -53,33 +55,79 @@ class Log
 			self::$configsPath = null;
 		} else {
 			self::$configs = [];
-			self::$configsPath = $configs;			
+			self::$configsPath = $configs;
 		}
-
 	}
+
+
+	/**
+	 * Set config by nem and options
+	 *
+	 * @param  mixed $name
+	 * @param  mixed $options
+	 * @return void
+	 */
+	public static function config($name, $options)
+	{
+
+		self::$configs[$name] = array_replace_recursive(self::$default, $options);
+	}
+
 
 	/**
 	 * Update default config
 	 *
-	 * @return void
+	 * @return array
+	 */
+	public static function default($options = [])
+	{
+
+		self::$default = array_replace_recursive(self::$default, $options);
+		self::$configs['default'] = self::$default;
+
+		return self::$default;
+	}
+
+
+	/**
+	 * Update default config
+	 * 
+	 * @deprecated
+	 * 
+	 * @return array
 	 */
 	public static function configDefault($config = [])
 	{
 
-		self::$defaultConfig = array_replace_recursive(self::$defaultConfig, $config);
+		return self::default($config);
 	}
+
 
 	/**
 	 * Reset configs
 	 *
 	 * @return void
 	 */
-	public static function configsReset()
+	public static function reset()
 	{
 
 		self::$configs = [];
 		self::$configsPath = null;
 	}
+
+
+	/**
+	 * to
+	 *
+	 * @param  mixed $type
+	 * @param  mixed $config
+	 * @return Log
+	 */
+	public static function to($type = 'default', $config = [])
+	{
+		return self::type($type, $config);
+	}
+
 
 	/**
 	 * Set log type and return with new Log class
@@ -91,7 +139,7 @@ class Log
 	{
 
 		if (empty($type)) {
-			throw new LogException('Empty config type');
+			$type = 'default';
 		}
 
 		if (empty(self::$configs)) {
@@ -105,14 +153,18 @@ class Log
 			}
 
 			if (!empty(self::$configs['default'])) {
-				self::$configs['default'] = array_replace_recursive(self::$defaultConfig, self::$configs['default']);
+				self::$configs['default'] = array_replace_recursive(self::$default, self::$configs['default']);
 			} else {
-				self::$configs['default'] = self::$defaultConfig;
+				self::$configs['default'] = self::$default;
 			}
 		}
 
 		if (!isset(self::$configs[$type])) {
-			throw new LogException('Invalid config type: ' . $type);			
+
+			self::$configs[$type] = self::$configs['default'];
+			//var_dump(self::$configs);
+
+			//throw new LogException('Invalid config type: ' . $type);			
 		}
 
 		self::$configs[$type] = array_replace_recursive(self::$configs['default'], self::$configs[$type], $config);
@@ -141,7 +193,8 @@ class Log
 	protected function setPath()
 	{
 
-		$this->filepath = $this->config['folder'] . $this->setVariables($this->config['pattern_file']);
+		$this->filepath = $this->config['folder'] . $this->setVariables($this->config['pattern_file']) . '.' . $this->config['extension'];
+
 		$basefolder = pathinfo($this->filepath, PATHINFO_DIRNAME);
 
 		if (!file_exists($basefolder)) {
@@ -339,8 +392,16 @@ class Log
 	public function flush()
 	{
 
-		if (file_exists($this->config['folder'])) {
-			$this->rrmdir($this->config['folder']);
+		foreach (self::$configs as $config) {
+
+			if (file_exists($config['folder']) && is_dir($config['folder'])) {
+
+				if (in_array($config['folder'], ['.', './', '.\\', '..'], true)) {
+					throw new \Exception('Protected folder cannot remove');
+				}
+
+				$this->rrmdir($config['folder']);
+			}
 		}
 	}
 

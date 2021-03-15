@@ -8,6 +8,7 @@ use Schalkt\Slog\Log;
 final class LogTest extends TestCase
 {
 
+
 	/**
 	 * exceptionTest
 	 *
@@ -18,12 +19,18 @@ final class LogTest extends TestCase
 	protected function exceptionTest($method, $errorMessage)
 	{
 
+		$message = '';
+
 		try {
 			$method();
 		} catch (\Exception $e) {
-			$this->assertSame($errorMessage, $e->getMessage());
+			$message = $e->getMessage();			
 		}
+
+		$this->assertSame($errorMessage, $message);	
+
 	}
+
 
 	/**
 	 * testDefaultInfo
@@ -53,9 +60,11 @@ final class LogTest extends TestCase
 		$this->assertSame(19, strpos($log, ' | INFO --- Test info'));
 	}
 
+
 	/**
 	 * testDefaultError
-	 *
+	 * 
+	 * @depends testDefaultInfo
 	 * @return void
 	 */
 	public function testDefaultError()
@@ -79,11 +88,15 @@ final class LogTest extends TestCase
 
 		// is logfile content correct?
 		$this->assertSame(19, strpos($log, ' | ERROR --- Test error'));
+
+		Log::type()->flush();
 	}
+
 
 	/**
 	 * testCustomWarning
 	 *
+	 * @depends testDefaultError
 	 * @return void
 	 */
 	public function testCustomWarning()
@@ -93,8 +106,8 @@ final class LogTest extends TestCase
 		Log::type()->flush();
 
 		$config = [
-			"pattern_file" => "/{YEAR}-{MONTH}/{TYPE}-{YEAR}-{MONTH}-{DAY}-{STATUS}.log",
-			"pattern_row" => "{DATE} ### {STATUS} ### {MESSAGE}",
+			'pattern_file' => '/{TYPE}/{YEAR}-{MONTH}/{TYPE}-{YEAR}-{MONTH}-{DAY}-{STATUS}',
+			'pattern_row' => '{DATE} ### {STATUS} ### {MESSAGE}',
 		];
 
 		// default config
@@ -112,11 +125,15 @@ final class LogTest extends TestCase
 
 		// is logfile content correct?
 		$this->assertSame(19, strpos($log, ' ### WARNING ### Test warning'));
+
+		Log::type()->flush();
 	}
+
 
 	/**
 	 * testLoadConfigAndCSV
 	 *
+	 * @depends testCustomWarning
 	 * @return void
 	 */
 	public function testLoadConfigAndCSV()
@@ -144,27 +161,78 @@ final class LogTest extends TestCase
 		// is logfile content correct?
 		$this->assertSame(0, strpos($log, '"date";"message";"class";"function"'));
 		$this->assertSame(57, strpos($log, ';CSV message;'));
+
+		Log::type()->flush();
 	}
 
 
 	/**
 	 * testExceptions
 	 *
+	 * @depends testLoadConfigAndCSV
 	 * @return void
 	 */
 	public function testExceptions()
 	{
 
 		$this->exceptionTest(function () {
-			Log::configs("");
-		}, "Invalid path of configs");
+			Log::configs('');
+		}, 'Invalid config file path or configs array');
 
-		$this->exceptionTest(function () {
-			Log::type("");
-		}, "Empty config type");
+		Log::type()->flush();
 
-		$this->exceptionTest(function () {
-			Log::type("defalt")->debug(['param1' => 1], 'Parameters');
-		}, "Invalid config type: defalt");
+	}
+
+	/**
+	 * testTo
+	 *
+	 * @depends testExceptions
+	 * @return void
+	 */
+	public function testTo()
+	{
+
+		// log to undefined config type
+		Log::to('something', [
+			'pattern_file' => '/{TYPE}/{TYPE}-{YEAR}-{MONTH}-{STATUS}',
+		])->info('Test something');
+
+		$logPath = dirname(__DIR__) . DIRECTORY_SEPARATOR . 'logs' . DIRECTORY_SEPARATOR . 'something';
+		$logFile = $logPath . DIRECTORY_SEPARATOR . 'something-' . date('Y-m') . '-INFO.log';
+
+		// is logfile exists?
+		$this->assertTrue(file_exists($logFile));
+
+		Log::type()->flush();
+	}
+
+	/**
+	 * testDefaultConfig
+	 *
+	 * @depends testTo
+	 * @return void
+	 */
+	public function testDefaultConfig()
+	{
+
+		Log::default([
+			'folder' => '.',
+			'pattern_file' => '/{TYPE}.log',
+		]);
+
+	
+		Log::to('world')->info('Hello World!');
+		
+		$logFile = dirname(__DIR__) . DIRECTORY_SEPARATOR . 'world.log';
+	
+		// is logfile exists?
+		$this->assertTrue(file_exists($logFile));
+
+		// root dir not removable
+		$this->exceptionTest(function () {			
+			Log::type()->flush();
+		}, 'Protected folder cannot remove');
+		
+
 	}
 }
