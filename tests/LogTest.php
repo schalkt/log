@@ -217,7 +217,7 @@ final class LogTest extends TestCase
 
 		Log::default([
 			'folder' => '.',
-			'pattern_file' => '/{TYPE}.log',
+			'pattern_file' => '/{TYPE}',
 		]);
 
 	
