@@ -9,254 +9,250 @@ final class LogTest extends TestCase
 {
 
 
-	/**
-	 * exceptionTest
-	 *
-	 * @param  mixed $method
-	 * @param  mixed $msg
-	 * @return void
-	 */
-	protected function exceptionTest($method, $errorMessage)
-	{
+    /**
+     * exceptionTest
+     *
+     * @param  mixed $method
+     * @param  mixed $msg
+     * @return void
+     */
+    protected function exceptionTest($method, $errorMessage)
+    {
+
+        $message = '';
 
-		$message = '';
+        try {
+            $method();
+        } catch (\Exception $e) {
+            $message = $e->getMessage();
+        }
 
-		try {
-			$method();
-		} catch (\Exception $e) {
-			$message = $e->getMessage();
-		}
+        $this->assertSame($errorMessage, $message);
+    }
 
-		$this->assertSame($errorMessage, $message);
 
-	}
+    /**
+     * testDefaultInfo
+     *
+     * @return void
+     */
+    public function testDefaultInfo()
+    {
 
+        // delete default log folder
+        Log::type()->flush();
 
-	/**
-	 * testDefaultInfo
-	 *
-	 * @return void
-	 */
-	public function testDefaultInfo()
-	{
+        // default config
+        Log::type()->info('Test info');
 
-		// delete default log folder
-		Log::type()->flush();
+        // concat logfile path
+        $logPath = dirname(__DIR__) . DIRECTORY_SEPARATOR . 'logs' . DIRECTORY_SEPARATOR . 'default' . DIRECTORY_SEPARATOR;
+        $logFile = $logPath . date('Y') . '-' . date('m') . DIRECTORY_SEPARATOR . 'default-' . date('Y-m-d') . '.log';
 
-		// default config
-		Log::type()->info('Test info');
+        // is logfile exists?
+        $this->assertTrue(file_exists($logFile));
 
-		// concat logfile path
-		$logPath = dirname(__DIR__) . DIRECTORY_SEPARATOR . 'logs' . DIRECTORY_SEPARATOR . 'default' . DIRECTORY_SEPARATOR;
-		$logFile = $logPath . date('Y') . '-' . date('m') . DIRECTORY_SEPARATOR . 'default-' . date('Y-m-d') . '.log';
+        // read log file content
+        $log = file_get_contents($logFile);
 
-		// is logfile exists?
-		$this->assertTrue(file_exists($logFile));
+        // is logfile content correct?
+        $this->assertSame(19, strpos($log, ' | INFO --- Test info'));
+    }
 
-		// read log file content
-		$log = file_get_contents($logFile);
 
-		// is logfile content correct?
-		$this->assertSame(19, strpos($log, ' | INFO --- Test info'));
-	}
+    /**
+     * testDefaultError
+     *
+     * @depends testDefaultInfo
+     * @return void
+     */
+    public function testDefaultError()
+    {
 
+        // delete default log folder
+        Log::type()->flush();
 
-	/**
-	 * testDefaultError
-	 *
-	 * @depends testDefaultInfo
-	 * @return void
-	 */
-	public function testDefaultError()
-	{
+        // default config
+        Log::type()->error('Test error');
 
-		// delete default log folder
-		Log::type()->flush();
+        // concat logfile path
+        $logPath = dirname(__DIR__) . DIRECTORY_SEPARATOR . 'logs' . DIRECTORY_SEPARATOR . 'default' . DIRECTORY_SEPARATOR;
+        $logFile = $logPath . date('Y') . '-' . date('m') . DIRECTORY_SEPARATOR . 'default-' . date('Y-m-d') . '.log';
 
-		// default config
-		Log::type()->error('Test error');
+        // is logfile exists?
+        $this->assertTrue(file_exists($logFile));
 
-		// concat logfile path
-		$logPath = dirname(__DIR__) . DIRECTORY_SEPARATOR . 'logs' . DIRECTORY_SEPARATOR . 'default' . DIRECTORY_SEPARATOR;
-		$logFile = $logPath . date('Y') . '-' . date('m') . DIRECTORY_SEPARATOR . 'default-' . date('Y-m-d') . '.log';
+        // read log file content
+        $log = file_get_contents($logFile);
 
-		// is logfile exists?
-		$this->assertTrue(file_exists($logFile));
+        // is logfile content correct?
+        $this->assertSame(19, strpos($log, ' | ERROR --- Test error'));
 
-		// read log file content
-		$log = file_get_contents($logFile);
+        Log::type()->flush();
+    }
 
-		// is logfile content correct?
-		$this->assertSame(19, strpos($log, ' | ERROR --- Test error'));
 
-		Log::type()->flush();
-	}
+    /**
+     * testCustomWarning
+     *
+     * @depends testDefaultError
+     * @return void
+     */
+    public function testCustomWarning()
+    {
 
+        // delete default log folder
+        Log::type()->flush();
 
-	/**
-	 * testCustomWarning
-	 *
-	 * @depends testDefaultError
-	 * @return void
-	 */
-	public function testCustomWarning()
-	{
+        $config = [
+            'pattern_file' => '/{TYPE}/{YEAR}-{MONTH}/{TYPE}-{YEAR}-{MONTH}-{DAY}-{STATUS}',
+            'pattern_row' => '{DATE} ### {STATUS} ### {MESSAGE}',
+        ];
 
-		// delete default log folder
-		Log::type()->flush();
+        // default config
+        Log::type('default', $config)->warning('Test warning');
+
+        // concat logfile path
+        $logPath = dirname(__DIR__) . DIRECTORY_SEPARATOR . 'logs' . DIRECTORY_SEPARATOR . 'default' . DIRECTORY_SEPARATOR;
+        $logFile = $logPath . date('Y') . '-' . date('m') . DIRECTORY_SEPARATOR . 'default-' . date('Y-m-d') . '-WARNING.log';
+
+        // is logfile exists?
+        $this->assertTrue(file_exists($logFile));
+
+        // read log file content
+        $log = file_get_contents($logFile);
 
-		$config = [
-			'pattern_file' => '/{TYPE}/{YEAR}-{MONTH}/{TYPE}-{YEAR}-{MONTH}-{DAY}-{STATUS}',
-			'pattern_row' => '{DATE} ### {STATUS} ### {MESSAGE}',
-		];
+        // is logfile content correct?
+        $this->assertSame(19, strpos($log, ' ### WARNING ### Test warning'));
 
-		// default config
-		Log::type('default', $config)->warning('Test warning');
+        Log::type()->flush();
+    }
 
-		// concat logfile path
-		$logPath = dirname(__DIR__) . DIRECTORY_SEPARATOR . 'logs' . DIRECTORY_SEPARATOR . 'default' . DIRECTORY_SEPARATOR;
-		$logFile = $logPath . date('Y') . '-' . date('m') . DIRECTORY_SEPARATOR . 'default-' . date('Y-m-d') . '-WARNING.log';
 
-		// is logfile exists?
-		$this->assertTrue(file_exists($logFile));
+    /**
+     * testLoadConfigAndCSV
+     *
+     * @depends testCustomWarning
+     * @return void
+     */
+    public function testLoadConfigAndCSV()
+    {
 
-		// read log file content
-		$log = file_get_contents($logFile);
+        // load config
+        Log::configs(__DIR__ . '/logs-config.php');
 
-		// is logfile content correct?
-		$this->assertSame(19, strpos($log, ' ### WARNING ### Test warning'));
+        // delete csv log folder
+        Log::type('csv')->flush();
 
-		Log::type()->flush();
-	}
+        // csv config
+        Log::type('csv')->info('CSV message');
 
+        // concat logfile path
+        $logPath = dirname(__DIR__) . DIRECTORY_SEPARATOR . 'logs' . DIRECTORY_SEPARATOR . 'csv' . DIRECTORY_SEPARATOR;
+        $logFile = $logPath . date('Y') . '-' . date('m') . DIRECTORY_SEPARATOR . 'csv-' . date('Y-m-d') . '.csv';
 
-	/**
-	 * testLoadConfigAndCSV
-	 *
-	 * @depends testCustomWarning
-	 * @return void
-	 */
-	public function testLoadConfigAndCSV()
-	{
+        // is logfile exists?
+        $this->assertTrue(file_exists($logFile));
 
-		// load config
-		Log::configs(__DIR__ . '/logs-config.php');
+        // read log file content
+        $log = file_get_contents($logFile);
 
-		// delete csv log folder
-		Log::type('csv')->flush();
+        // is logfile content correct?
+        $this->assertSame(0, strpos($log, '"date";"message";"class";"function"'));
+        $this->assertSame(57, strpos($log, ';CSV message;'));
 
-		// csv config
-		Log::type('csv')->info('CSV message');
+        Log::type()->flush();
+    }
 
-		// concat logfile path
-		$logPath = dirname(__DIR__) . DIRECTORY_SEPARATOR . 'logs' . DIRECTORY_SEPARATOR . 'csv' . DIRECTORY_SEPARATOR;
-		$logFile = $logPath . date('Y') . '-' . date('m') . DIRECTORY_SEPARATOR . 'csv-' . date('Y-m-d') . '.csv';
 
-		// is logfile exists?
-		$this->assertTrue(file_exists($logFile));
+    /**
+     * testExceptions
+     *
+     * @depends testLoadConfigAndCSV
+     * @return void
+     */
+    public function testExceptions()
+    {
 
-		// read log file content
-		$log = file_get_contents($logFile);
+        $this->exceptionTest(function () {
+            Log::configs('');
+        }, 'Invalid config file path or configs array');
 
-		// is logfile content correct?
-		$this->assertSame(0, strpos($log, '"date";"message";"class";"function"'));
-		$this->assertSame(57, strpos($log, ';CSV message;'));
+        Log::type()->flush();
+    }
 
-		Log::type()->flush();
-	}
+    /**
+     * testTo
+     *
+     * @depends testExceptions
+     * @return void
+     */
+    public function testTo()
+    {
 
+        // log to undefined config type
+        Log::to('something', [
+            'pattern_file' => '/{TYPE}/{TYPE}-{YEAR}-{MONTH}-{STATUS}',
+        ])->info('Test something');
 
-	/**
-	 * testExceptions
-	 *
-	 * @depends testLoadConfigAndCSV
-	 * @return void
-	 */
-	public function testExceptions()
-	{
+        $logPath = dirname(__DIR__) . DIRECTORY_SEPARATOR . 'logs' . DIRECTORY_SEPARATOR . 'something';
+        $logFile = $logPath . DIRECTORY_SEPARATOR . 'something-' . date('Y-m') . '-INFO.log';
 
-		$this->exceptionTest(function () {
-			Log::configs('');
-		}, 'Invalid config file path or configs array');
+        // is logfile exists?
+        $this->assertTrue(file_exists($logFile));
 
-		Log::type()->flush();
+        Log::type()->flush();
+    }
 
-	}
+    /**
+     * testDefaultConfig
+     *
+     * @depends testTo
+     * @return void
+     */
+    public function testDefaultConfig()
+    {
 
-	/**
-	 * testTo
-	 *
-	 * @depends testExceptions
-	 * @return void
-	 */
-	public function testTo()
-	{
+        Log::default([
+            'folder' => '.',
+            'pattern_file' => '/{TYPE}',
+        ]);
 
-		// log to undefined config type
-		Log::to('something', [
-			'pattern_file' => '/{TYPE}/{TYPE}-{YEAR}-{MONTH}-{STATUS}',
-		])->info('Test something');
 
-		$logPath = dirname(__DIR__) . DIRECTORY_SEPARATOR . 'logs' . DIRECTORY_SEPARATOR . 'something';
-		$logFile = $logPath . DIRECTORY_SEPARATOR . 'something-' . date('Y-m') . '-INFO.log';
+        Log::to('world')->info('Hello World!');
 
-		// is logfile exists?
-		$this->assertTrue(file_exists($logFile));
+        $logFile = dirname(__DIR__) . DIRECTORY_SEPARATOR . 'world.log';
 
-		Log::type()->flush();
-	}
+        // is logfile exists?
+        $this->assertTrue(file_exists($logFile));
 
-	/**
-	 * testDefaultConfig
-	 *
-	 * @depends testTo
-	 * @return void
-	 */
-	public function testDefaultConfig()
-	{
+        // root dir not removable
+        $this->exceptionTest(function () {
+            Log::type()->flush();
+        }, 'Protected folder cannot remove');
+    }
 
-		Log::default([
-			'folder' => '.',
-			'pattern_file' => '/{TYPE}',
-		]);
 
+    public function testErrorTitle()
+    {
 
-		Log::to('world')->info('Hello World!');
+        Log::default([
+            'folder' => '.',
+            'pattern_file' => '/{TYPE}',
+        ]);
 
-		$logFile = dirname(__DIR__) . DIRECTORY_SEPARATOR . 'world.log';
 
-		// is logfile exists?
-		$this->assertTrue(file_exists($logFile));
+        Log::to('errors')->info('Invalid params');
 
-		// root dir not removable
-		$this->exceptionTest(function () {
-			Log::type()->flush();
-		}, 'Protected folder cannot remove');
+        $logFile = dirname(__DIR__) . DIRECTORY_SEPARATOR . 'errors.log';
 
-	}
+        // is logfile exists?
+        $this->assertTrue(file_exists($logFile));
 
+        // read log file content
+        $log = file_get_contents($logFile);
 
-	public function testErrorTitle() {
-
-		Log::default([
-			'folder' => '.',
-			'pattern_file' => '/{TYPE}',
-		]);
-
-
-		Log::to('errors')->info('Invalid params');
-
-		$logFile = dirname(__DIR__) . DIRECTORY_SEPARATOR . 'errors.log';
-
-		// is logfile exists?
-		$this->assertTrue(file_exists($logFile));
-
-		// read log file content
-		$log = file_get_contents($logFile);
-
-		// is logfile content correct?
-		$this->assertSame(31, strpos($log, 'Invalid params'));
-
-	}
-
+        // is logfile content correct?
+        $this->assertSame(31, strpos($log, 'Invalid params'));
+    }
 }
