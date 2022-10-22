@@ -199,7 +199,7 @@ class Log
      *
      * @param array $config
      */
-    function __construct($config, $type)
+    public function __construct($config, $type)
     {
 
         $this->type = trim((string) $type);
