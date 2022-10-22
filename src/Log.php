@@ -57,7 +57,7 @@ class Log
 				throw new LogException('Invalid config file path');
 			}
 
-			self::$configs = require($configs);
+			self::$configs = require_once($configs);
 
 			if (!\is_array(self::$configs)) {
 				throw new LogException('Invalid config file path');
@@ -215,7 +215,11 @@ class Log
 	protected function setPath()
 	{
 
-		$this->filepath = $this->config['folder'] . $this->setVariables($this->config['pattern_file']) . '.' . $this->config['extension'];
+		$path = \stripslashes($this->config['folder'] . $this->setVariables($this->config['pattern_file']) . '.' . $this->config['extension']);
+		$parts = explode(\DIRECTORY_SEPARATOR, $path);
+		$parts = array_map('trim', $parts);
+
+		$this->filepath = implode(\DIRECTORY_SEPARATOR, $parts);
 
 		$basefolder = pathinfo($this->filepath, PATHINFO_DIRNAME);
 
