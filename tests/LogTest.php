@@ -233,6 +233,30 @@ final class LogTest extends TestCase
 			Log::type()->flush();
 		}, 'Protected folder cannot remove');
 		
+	}
+
+
+	public function testErrorTitle() {
+
+		Log::default([
+			'folder' => '.',
+			'pattern_file' => '/{TYPE}',
+		]);
+
+	
+		Log::to('errors')->info('Invalid params');
+		
+		$logFile = dirname(__DIR__) . DIRECTORY_SEPARATOR . 'errors.log';
+	
+		// is logfile exists?
+		$this->assertTrue(file_exists($logFile));
+
+		// read log file content
+		$log = file_get_contents($logFile);
+		
+		// is logfile content correct?
+		$this->assertSame(31, strpos($log, 'Invalid params'));
 
 	}
+
 }

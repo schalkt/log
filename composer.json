@@ -1,6 +1,6 @@
 {
     "name": "schalkt/log",
-    "version": "2.0.2",
+    "version": "2.0.3",
     "description": "Simple and easy configurable PHP logfile system",
     "keywords": [
         "log",
@@ -18,7 +18,7 @@
         }
     ],
     "require": {
-        "php": ">=7.3.0"
+        "php": ">=7.4.0"
     },
     "require-dev": {
         "phpunit/phpunit": "^9.0"
