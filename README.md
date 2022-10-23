@@ -1,11 +1,10 @@
 # Simple and easy configurable PHP log system
 
-I decided to write my own log engine, which already has a basic and automatic rotation. Plus, with a simple pattern change, I can write to CSV. And of course, objects and arrays are automatically converted to prettified JSON.
+A simple log system with pattern based path and messages. Objects and arrays are automatically converted to prettified JSON. You can also create CVS files. No need log rotation, just delete the older log folders if necessary.
 
 [![Latest Stable Version](https://poser.pugx.org/schalkt/log/v)](//packagist.org/packages/schalkt/log) [![Total Downloads](https://poser.pugx.org/schalkt/log/downloads)](//packagist.org/packages/schalkt/log) [![License](https://poser.pugx.org/schalkt/log/license)](//packagist.org/packages/schalkt/log)
 [![GitHub issues](https://img.shields.io/github/issues/schalkt/log.svg?style=flat-square)](https://github.com/schalkt/log/issues)
 [![Build Status](https://travis-ci.org/schalkt/log.svg?branch=master)](https://travis-ci.org/schalkt/log)
-
 
 [![Maintainability Rating](https://sonarcloud.io/api/project_badges/measure?project=schalkt_log&metric=sqale_rating)](https://sonarcloud.io/dashboard?id=schalkt_log)
 [![Security Rating](https://sonarcloud.io/api/project_badges/measure?project=schalkt_log&metric=security_rating)](https://sonarcloud.io/dashboard?id=schalkt_log)
@@ -20,10 +19,11 @@ I decided to write my own log engine, which already has a basic and automatic ro
 
 - pattern based logfile path: `/{TYPE}/{YEAR}/{YEAR}-{MONTH}/{TYPE}-{MONTH}-{DAY}`
 - pattern based rows: `{DATE} | {STATUS} --- {MESSAGE}`
-- detect message type and objects and arrays converted to prettified JSON automatically
+- objects and arrays converted to prettified JSON automatically
 - customizable CSV row pattern: `'"{DATE}";{MESSAGE};"{BACKTRACE.CLASS}";"{BACKTRACE.FUNCTION}"'`
+- multiple log types in config
 
-## Available types
+## Available log levels
 
 - `Log::to()->info($message, $title = null);`
 - `Log::to()->error($message, $title = null);`
@@ -34,6 +34,24 @@ I decided to write my own log engine, which already has a basic and automatic ro
 - `Log::to()->exception(\Exception $ex, $title = null);`
 
 ## Examples
+
+Example folder structure with {TYPE}, {YEAR}, {MONTH} and {DATE} patterns
+
+```bash
+/storage/logs
+    - /default
+        - 2021
+        - 2022
+    - /logins
+        - /2021
+        - /2022
+            - /2022-09
+            - /2022-10
+                - /INFO-2022-10-20.log
+                - /INFO-2022-10-21.log
+                - /INFO-2022-10-22.log
+                - /ERROR-2022-10-22.log
+```
 
 ### Use default config
 
@@ -55,7 +73,7 @@ I decided to write my own log engine, which already has a basic and automatic ro
 
     require_once '/vendor/autoload.php';
 
-    Log::default(["folder" => './testlogs']);
+    Log::default(["folder" => APP_PATH . '/storage/logs/default']);
     Log::to()->info('Hello World!');
 
 ```
@@ -69,7 +87,7 @@ I decided to write my own log engine, which already has a basic and automatic ro
     require_once '/vendor/autoload.php';
 
     Log::config('import', [
-        'folder' => '.' . self::DS . 'logs/import',
+        'folder' => APP_PATH . '/storage/logs/import',
         'folder_chmod' => 0700,
         'pattern_row' => '{DATE} {EOL} {STATUS} {EOL} {MESSAGE} {EOL} {REQUEST}',
     ]);
@@ -105,7 +123,7 @@ I decided to write my own log engine, which already has a basic and automatic ro
 ```php
 return [
     'default' => [
-        "folder" => './logs/default',
+        "folder" => APP_PATH . '/storage/logs/default',
         "folder_chmod" => 0770,
         "pattern_file" => "/{YEAR}-{MONTH}/{TYPE}-{YEAR}-{MONTH}-{DAY}",
         "pattern_row" => "{DATE} | {STATUS} --- {MESSAGE}",
@@ -120,14 +138,14 @@ return [
 ```php
 return [
     "csv" => [
-        "folder" => './logs',
+        "folder" =>  APP_PATH . '/storage/logs/csv',
         "header" => '"date";"message";"class";"function"',
         "pattern_file" => "/{TYPE}/{YEAR}-{MONTH}/{TYPE}-{YEAR}-{MONTH}-{DAY}",
         "pattern_row" => '"{DATE}";{MESSAGE};"{BACKTRACE.CLASS}";"{BACKTRACE.FUNCTION}"',
         "extension" => "csv",
     ],
     "login" => [
-        "folder" => './logs',
+        "folder" => APP_PATH . '/storage/logs/login',
         "pattern_file" => "/logins/{TYPE}/{YEAR}-{MONTH}-{DAY}",
         "pattern_row" => "{DATE} {TITLE} {MESSAGE}",
     ],
