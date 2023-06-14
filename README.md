@@ -4,6 +4,7 @@ A simple log system with pattern based path and messages. Objects and arrays are
 
 [![Latest Stable Version](https://poser.pugx.org/schalkt/log/v)](//packagist.org/packages/schalkt/log) [![Total Downloads](https://poser.pugx.org/schalkt/log/downloads)](//packagist.org/packages/schalkt/log) [![License](https://poser.pugx.org/schalkt/log/license)](//packagist.org/packages/schalkt/log)
 [![GitHub issues](https://img.shields.io/github/issues/schalkt/log.svg?style=flat-square)](https://github.com/schalkt/log/issues)
+[![Test](https://github.com/schalkt/log/actions/workflows/ci.yml/badge.svg)](https://github.com/schalkt/log/actions/workflows/ci.yml)
 
 [![Maintainability Rating](https://sonarcloud.io/api/project_badges/measure?project=schalkt_log&metric=sqale_rating)](https://sonarcloud.io/dashboard?id=schalkt_log)
 [![Security Rating](https://sonarcloud.io/api/project_badges/measure?project=schalkt_log&metric=security_rating)](https://sonarcloud.io/dashboard?id=schalkt_log)

@@ -23,7 +23,7 @@ class Log
 
     protected static $configs = [];
     protected static $default = [
-        'folder' => '.' . self::DS . 'logs',
+        'folder' => null,
         'folder_chmod' => 0770,
         'pattern_file' => self::DS . '{TYPE}' . self::DS . '{YEAR}-{MONTH}' . self::DS . '{TYPE}-{YEAR}-{MONTH}-{DAY}',
         'pattern_row' => '{DATE} | {STATUS} --- {MESSAGE}',
@@ -203,6 +203,10 @@ class Log
     protected function setPath()
     {
 
+        if (empty($this->config['folder'])) {
+            $this->config['folder'] = dirname(__DIR__) . self::DS . 'logs';
+        }
+
         $path = \stripslashes(implode('', [
             $this->config['folder'],
             $this->setVariables($this->config['pattern_file']),
@@ -240,7 +244,7 @@ class Log
         $this->setPath();
 
         $row = $this->setVariables($this->config['pattern_row'], $message, $title);
-        $filepath = \realpath($this->filepath);
+        $filepath = trim($this->filepath);
 
         if (!file_exists($filepath) && !empty($this->config['header'])) {
             file_put_contents($filepath, $this->config['header'] . PHP_EOL, FILE_APPEND);
@@ -414,6 +418,10 @@ class Log
     {
 
         foreach (self::$configs as $config) {
+
+            if (empty($config['folder'])) {
+                $config['folder'] = dirname(__DIR__) . self::DS . 'logs';
+            }
 
             if (file_exists($config['folder']) && is_dir($config['folder'])) {
 
