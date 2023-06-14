@@ -57,7 +57,7 @@ class Log
                 throw new LogException('Invalid config file path');
             }
 
-            self::$configs = require_once($configs);
+            self::$configs = require_once $configs;
 
             if (!\is_array(self::$configs)) {
                 throw new LogException('Invalid config file path');
@@ -136,18 +136,6 @@ class Log
     {
 
         return self::default($config);
-    }
-
-
-    /**
-     * Reset configs
-     *
-     * @return void
-     */
-    public static function reset()
-    {
-
-        self::$configs = [];
     }
 
 
