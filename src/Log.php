@@ -33,6 +33,7 @@ class Log
 
     protected $type = 'default';
     protected $filepath;
+    protected $filename;
     protected $config;
     protected $status = self::INFO;
 
@@ -207,22 +208,18 @@ class Log
             $this->config['folder'] = dirname(__DIR__) . self::DS . 'logs';
         }
 
-        $path = \stripslashes(implode('', [
+        $filepath = (implode('', [
             $this->config['folder'],
             $this->setVariables($this->config['pattern_file']),
             '.',
             $this->config['extension']
         ]));
 
-        $parts = explode(\DIRECTORY_SEPARATOR, $path);
-        $parts = array_map('trim', $parts);
+        $this->filepath = dirname($filepath);
+        $this->filename = basename($filepath);
 
-        $this->filepath = implode(\DIRECTORY_SEPARATOR, $parts);
-
-        $basefolder = pathinfo($this->filepath, PATHINFO_DIRNAME);
-
-        if (!file_exists($basefolder)) {
-            mkdir($basefolder, !empty($this->config['folder_chmod']) ? $this->config['folder_chmod'] : 0770, true);
+        if (!file_exists($this->filepath)) {
+            mkdir($this->filepath, !empty($this->config['folder_chmod']) ? $this->config['folder_chmod'] : 0770, true);
         }
     }
 
@@ -244,7 +241,7 @@ class Log
         $this->setPath();
 
         $row = $this->setVariables($this->config['pattern_row'], $message, $title);
-        $filepath = trim($this->filepath);
+        $filepath = realpath($this->filepath) . self::DS . $this->filename;
 
         if (!file_exists($filepath) && !empty($this->config['header'])) {
             file_put_contents($filepath, $this->config['header'] . PHP_EOL, FILE_APPEND);
