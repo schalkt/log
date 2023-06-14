@@ -1,6 +1,6 @@
 {
     "name": "schalkt/log",
-    "version": "2.0.4",
+    "version": "2.0.5",
     "description": "Simple and easy configurable PHP logfile system",
     "keywords": [
         "log",
