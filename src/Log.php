@@ -346,7 +346,7 @@ class Log
      * @param string $message
      * @return void
      */
-    public function exception(LogException $ex, $title = null)
+    public function exception(\Exception $ex, $title = null)
     {
         return $this->addMessage([$ex->getMessage(), $ex->getFile(), $ex->getLine()], self::EXCEPTION, $title);
     }
