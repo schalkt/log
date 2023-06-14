@@ -240,12 +240,13 @@ class Log
         $this->setPath();
 
         $row = $this->setVariables($this->config['pattern_row'], $message, $title);
+        $filepath = \realpath($this->filepath);
 
-        if (!file_exists($this->filepath) && !empty($this->config['header'])) {
-            file_put_contents($this->filepath, $this->config['header'] . PHP_EOL, FILE_APPEND);
+        if (!file_exists($filepath) && !empty($this->config['header'])) {
+            file_put_contents($filepath, $this->config['header'] . PHP_EOL, FILE_APPEND);
         }
 
-        file_put_contents($this->filepath, $row . PHP_EOL, FILE_APPEND);
+        file_put_contents($filepath, $row . PHP_EOL, FILE_APPEND);
 
         return $this;
     }
