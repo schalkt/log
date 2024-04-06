@@ -16,3 +16,4 @@ jobs:
       - uses: php-actions/phpunit@v3
         with:
           php_version: "8.2"
+          test_suffix: Test.php

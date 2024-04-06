@@ -65,7 +65,6 @@ final class LogTest extends TestCase
     /**
      * testDefaultError
      *
-     * @depends testDefaultInfo
      * @return void
      */
     public function testDefaultError()
@@ -97,7 +96,6 @@ final class LogTest extends TestCase
     /**
      * testCustomWarning
      *
-     * @depends testDefaultError
      * @return void
      */
     public function testCustomWarning()
@@ -134,7 +132,6 @@ final class LogTest extends TestCase
     /**
      * testLoadConfigAndCSV
      *
-     * @depends testCustomWarning
      * @return void
      */
     public function testLoadConfigAndCSV()
@@ -170,7 +167,6 @@ final class LogTest extends TestCase
     /**
      * testExceptions
      *
-     * @depends testLoadConfigAndCSV
      * @return void
      */
     public function testExceptions()
@@ -186,7 +182,6 @@ final class LogTest extends TestCase
     /**
      * testTo
      *
-     * @depends testExceptions
      * @return void
      */
     public function testTo()
@@ -209,7 +204,6 @@ final class LogTest extends TestCase
     /**
      * testDefaultConfig
      *
-     * @depends testTo
      * @return void
      */
     public function testDefaultConfig()
