@@ -2,7 +2,9 @@
 
 A simple log system with pattern based path and messages. Objects and arrays are automatically converted to prettified JSON. You can also create CVS files. No need log rotation, just delete the older log folders if necessary.
 
-[![Latest Stable Version](https://poser.pugx.org/schalkt/log/v)](//packagist.org/packages/schalkt/log) [![Total Downloads](https://poser.pugx.org/schalkt/log/downloads)](//packagist.org/packages/schalkt/log) [![License](https://poser.pugx.org/schalkt/log/license)](//packagist.org/packages/schalkt/log)
+[![Latest Stable Version](https://poser.pugx.org/schalkt/log/v)](//packagist.org/packages/schalkt/log)
+[![Total Downloads](https://poser.pugx.org/schalkt/log/downloads)](//packagist.org/packages/schalkt/log)
+[![License](https://poser.pugx.org/schalkt/log/license)](//packagist.org/packages/schalkt/log)
 [![GitHub issues](https://img.shields.io/github/issues/schalkt/log.svg?style=flat-square)](https://github.com/schalkt/log/issues)
 [![Test](https://github.com/schalkt/log/actions/workflows/ci.yml/badge.svg)](https://github.com/schalkt/log/actions/workflows/ci.yml)
 
