@@ -8,6 +8,8 @@ use Schalkt\Slog\Log;
 final class LogTest extends TestCase
 {
 
+    const DS = DIRECTORY_SEPARATOR;
+
 
     /**
      * exceptionTest
@@ -46,8 +48,8 @@ final class LogTest extends TestCase
         Log::type()->info('Test info');
 
         // concat logfile path
-        $logPath = dirname(__DIR__) . DIRECTORY_SEPARATOR . 'logs' . DIRECTORY_SEPARATOR . 'default' . DIRECTORY_SEPARATOR;
-        $logFile = $logPath . date('Y') . '-' . date('m') . DIRECTORY_SEPARATOR . 'default-' . date('Y-m-d') . '.log';
+        $logPath = dirname(__DIR__) . self::DS . 'logs' . self::DS . 'default' . self::DS;
+        $logFile = $logPath . date('Y') . '-' . date('m') . self::DS . 'default-' . date('Y-m-d') . '.log';
 
         // is logfile exists?
         $this->assertTrue(file_exists($logFile));
@@ -76,8 +78,8 @@ final class LogTest extends TestCase
         Log::type()->error('Test error');
 
         // concat logfile path
-        $logPath = dirname(__DIR__) . DIRECTORY_SEPARATOR . 'logs' . DIRECTORY_SEPARATOR . 'default' . DIRECTORY_SEPARATOR;
-        $logFile = $logPath . date('Y') . '-' . date('m') . DIRECTORY_SEPARATOR . 'default-' . date('Y-m-d') . '.log';
+        $logPath = dirname(__DIR__) . self::DS . 'logs' . self::DS . 'default' . self::DS;
+        $logFile = $logPath . date('Y') . '-' . date('m') . self::DS . 'default-' . date('Y-m-d') . '.log';
 
         // is logfile exists?
         $this->assertTrue(file_exists($logFile));
@@ -113,8 +115,8 @@ final class LogTest extends TestCase
         Log::type('default', $config)->warning('Test warning');
 
         // concat logfile path
-        $logPath = dirname(__DIR__) . DIRECTORY_SEPARATOR . 'logs' . DIRECTORY_SEPARATOR . 'default' . DIRECTORY_SEPARATOR;
-        $logFile = $logPath . date('Y') . '-' . date('m') . DIRECTORY_SEPARATOR . 'default-' . date('Y-m-d') . '-WARNING.log';
+        $logPath = dirname(__DIR__) . self::DS . 'logs' . self::DS . 'default' . self::DS;
+        $logFile = $logPath . date('Y') . '-' . date('m') . self::DS . 'default-' . date('Y-m-d') . '-WARNING.log';
 
         // is logfile exists?
         $this->assertTrue(file_exists($logFile));
@@ -148,8 +150,8 @@ final class LogTest extends TestCase
         Log::type('csv')->info('CSV message');
 
         // concat logfile path
-        $logPath = dirname(__DIR__) . DIRECTORY_SEPARATOR . 'logs' . DIRECTORY_SEPARATOR . 'csv' . DIRECTORY_SEPARATOR;
-        $logFile = $logPath . date('Y') . '-' . date('m') . DIRECTORY_SEPARATOR . 'csv-' . date('Y-m-d') . '.csv';
+        $logPath = dirname(__DIR__) . self::DS . 'logs' . self::DS . 'csv' . self::DS;
+        $logFile = $logPath . date('Y') . '-' . date('m') . self::DS . 'csv-' . date('Y-m-d') . '.csv';
 
         // is logfile exists?
         $this->assertTrue(file_exists($logFile));
@@ -195,8 +197,8 @@ final class LogTest extends TestCase
             'pattern_file' => '/{TYPE}/{TYPE}-{YEAR}-{MONTH}-{STATUS}',
         ])->info('Test something');
 
-        $logPath = dirname(__DIR__) . DIRECTORY_SEPARATOR . 'logs' . DIRECTORY_SEPARATOR . 'something';
-        $logFile = $logPath . DIRECTORY_SEPARATOR . 'something-' . date('Y-m') . '-INFO.log';
+        $logPath = dirname(__DIR__) . self::DS . 'logs' . self::DS . 'something';
+        $logFile = $logPath . self::DS . 'something-' . date('Y-m') . '-INFO.log';
 
         // is logfile exists?
         $this->assertTrue(file_exists($logFile));
@@ -221,7 +223,7 @@ final class LogTest extends TestCase
 
         Log::to('world')->info('Hello World!');
 
-        $logFile = dirname(__DIR__) . DIRECTORY_SEPARATOR . 'world.log';
+        $logFile = dirname(__DIR__) . self::DS . 'world.log';
 
         // is logfile exists?
         $this->assertTrue(file_exists($logFile));
@@ -244,7 +246,7 @@ final class LogTest extends TestCase
 
         Log::to('errors')->info('Invalid params');
 
-        $logFile = dirname(__DIR__) . DIRECTORY_SEPARATOR . 'errors.log';
+        $logFile = dirname(__DIR__) . self::DS . 'errors.log';
 
         // is logfile exists?
         $this->assertTrue(file_exists($logFile));
