@@ -7,11 +7,12 @@ A simple log system with pattern based path and messages. Objects and arrays are
 [![License](https://poser.pugx.org/schalkt/log/license)](//packagist.org/packages/schalkt/log)
 [![GitHub issues](https://img.shields.io/github/issues/schalkt/log.svg?style=flat-square)](https://github.com/schalkt/log/issues)
 [![Test](https://github.com/schalkt/log/actions/workflows/ci.yml/badge.svg)](https://github.com/schalkt/log/actions/workflows/ci.yml)
-
-[![Maintainability Rating](https://sonarcloud.io/api/project_badges/measure?project=schalkt_log&metric=sqale_rating)](https://sonarcloud.io/dashboard?id=schalkt_log)
-[![Security Rating](https://sonarcloud.io/api/project_badges/measure?project=schalkt_log&metric=security_rating)](https://sonarcloud.io/dashboard?id=schalkt_log)
-[![Vulnerabilities](https://sonarcloud.io/api/project_badges/measure?project=schalkt_log&metric=vulnerabilities)](https://sonarcloud.io/dashboard?id=schalkt_log)
-[![Bugs](https://sonarcloud.io/api/project_badges/measure?project=schalkt_log&metric=bugs)](https://sonarcloud.io/dashboard?id=schalkt_log)
+[![Build Status](https://github.com/schalkt/log/actions/workflows/ci.yml/badge.svg)](https://github.com/schalkt/log/actions/workflows/ci.yml)
+[![Code Coverage](https://coveralls.io/repos/github/schalkt/log/badge.svg?branch=main)](https://coveralls.io/github/schalkt/log?branch=main)
+[![PHP Version](https://img.shields.io/packagist/php-v/schalkt/log.svg)](https://packagist.org/packages/schalkt/log)
+[![GitHub stars](https://img.shields.io/github/stars/schalkt/log.svg)](https://github.com/schalkt/log/stargazers)
+[![GitHub forks](https://img.shields.io/github/forks/schalkt/log.svg)](https://github.com/schalkt/log/network)
+[![GitHub contributors](https://img.shields.io/github/contributors/schalkt/log.svg)](https://github.com/schalkt/log/graphs/contributors)
 
 ## Install
 
