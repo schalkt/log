@@ -195,6 +195,3 @@ Log::to('custom')->flush(false);
 
 If the folder is protected (e.g., root directories like `./` or `../`), the method will throw a `LogException` to prevent accidental deletion.
 
-## Todo
-
-- configurable output (STDOUT, STDERR)
