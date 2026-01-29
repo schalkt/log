@@ -15,5 +15,5 @@ jobs:
       - uses: php-actions/composer@v6
       - uses: php-actions/phpunit@v3
         with:
-          php_version: "8.2"
+          php_version: "8.2.30"
           test_suffix: Test.php
