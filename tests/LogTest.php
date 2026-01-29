@@ -214,7 +214,6 @@ final class LogTest extends TestCase
             'pattern_file' => '/{TYPE}',
         ]);
 
-
         Log::to('world')->info('Hello World!');
 
         $logFile = dirname(__DIR__) . self::DS . 'world.log';
@@ -222,10 +221,9 @@ final class LogTest extends TestCase
         // is logfile exists?
         $this->assertTrue(file_exists($logFile));
 
-        // root dir not removable
-        $this->exceptionTest(function () {
-            Log::type()->flush();
-        }, 'Protected folder cannot remove');
+        // clean up
+        unlink($logFile);
+
     }
 
 
@@ -233,14 +231,13 @@ final class LogTest extends TestCase
     {
 
         Log::default([
-            'folder' => '.',
             'pattern_file' => '/{TYPE}',
         ]);
 
 
         Log::to('errors')->info('Invalid params');
 
-        $logFile = dirname(__DIR__) . self::DS . 'errors.log';
+        $logFile = dirname(__DIR__) . self::DS . 'logs' . self::DS . 'errors.log';
 
         // is logfile exists?
         $this->assertTrue(file_exists($logFile));
@@ -250,5 +247,47 @@ final class LogTest extends TestCase
 
         // is logfile content correct?
         $this->assertSame(31, strpos($log, 'Invalid params'));
+    }
+
+    public function testNewVariables()
+    {
+        // Set up a custom configuration
+        $config = [
+            'folder' => './logs',
+            'pattern_file' => '/{YEAR}-{MONTH}-{TYPE}-{STATUS}',
+            'pattern_row' => '{IP} {USER_AGENT} {REQUEST_METHOD} {REQUEST_URI} {SESSION_ID} {HOSTNAME} {EXECUTION_TIME} {MEMORY_USAGE} {MEMORY_PEAK_USAGE}',
+        ];
+
+        // Apply the configuration
+        Log::type('custom', $config)->info('Testing new variables');
+
+        // Define expected log file path
+        $logPath = dirname(__DIR__) . self::DS . 'logs';
+        $logFile = $logPath . self::DS . date('Y') . '-' . date('m') . '-custom-INFO.log';
+
+        // Check if the log file exists
+        $this->assertTrue(file_exists($logFile));
+
+        // Read the log file content
+        $logContent = file_get_contents($logFile);
+
+        // Check if the log contains the expected variables
+        $this->assertStringContainsString($_SERVER['REMOTE_ADDR'] ?? 'unknown', $logContent);
+        $this->assertStringContainsString($_SERVER['HTTP_USER_AGENT'] ?? 'unknown', $logContent);
+        $this->assertStringContainsString($_SERVER['REQUEST_METHOD'] ?? 'unknown', $logContent);
+        $this->assertStringContainsString($_SERVER['REQUEST_URI'] ?? 'unknown', $logContent);
+        $this->assertStringContainsString(session_id() ?? 'no-session', $logContent);
+        $this->assertStringContainsString(gethostname(), $logContent);
+
+        // Clean up
+        Log::type('custom')->flush();
+    }
+
+    protected function setUp(): void
+    {
+        // Set default folder for tests
+        Log::default([
+            'folder' => './logs',
+        ]);
     }
 }

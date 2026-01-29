@@ -374,6 +374,13 @@ class Log
             }
         }
 
+        preg_match_all("/{ENV\.(.*)}/ismU", $pattern, $matchesENV, PREG_SET_ORDER);
+        if (!empty($matchesENV[0])) {
+            foreach ($matchesENV as $match) {
+                $pattern = str_replace($match[0], getenv($match[1]) ?: 'unknown', $pattern);
+            }
+        }
+
         return str_replace([
             '{YEAR}',
             '{MONTH}',
@@ -388,6 +395,15 @@ class Log
             '{REQUEST}',
             '{RAWBODY}',
             '{EOL}',
+            '{IP}',
+            '{USER_AGENT}',
+            '{REQUEST_METHOD}',
+            '{REQUEST_URI}',
+            '{SESSION_ID}',
+            '{HOSTNAME}',
+            '{EXECUTION_TIME}',
+            '{MEMORY_USAGE}',
+            '{MEMORY_PEAK_USAGE}',
         ], [
             date('Y'),
             date('m'),
@@ -401,7 +417,16 @@ class Log
             $this->status,
             $this->json($_REQUEST),
             file_get_contents('php://input'),
-            PHP_EOL
+            PHP_EOL,
+            $_SERVER['REMOTE_ADDR'] ?? 'unknown',
+            $_SERVER['HTTP_USER_AGENT'] ?? 'unknown',
+            $_SERVER['REQUEST_METHOD'] ?? 'unknown',
+            $_SERVER['REQUEST_URI'] ?? 'unknown',
+            session_id() ?? 'no-session',
+            gethostname(),
+            microtime(true) - $_SERVER['REQUEST_TIME_FLOAT'],
+            memory_get_usage(),
+            memory_get_peak_usage(),
         ], $pattern);
     }
 
@@ -411,40 +436,36 @@ class Log
      * @param string $message
      * @return void
      */
-    public function flush()
+    public function flush($deleteBaseFolder = true)
     {
+        if (empty($this->config['folder'])) {
+            throw new LogException('No folder defined for this log type.');
+        }
 
-        foreach (self::$configs as $config) {
+        $folder = $this->config['folder'];
 
-            if (empty($config['folder'])) {
-                $config['folder'] = dirname(__DIR__) . self::DS . 'logs';
+        if (file_exists($folder) && is_dir($folder)) {
+            if (in_array($folder, ['.', './', '.\\', '..'], true)) {
+                throw new LogException('Protected folder cannot be removed.');
             }
 
-            if (file_exists($config['folder']) && is_dir($config['folder'])) {
-
-                if (in_array($config['folder'], ['.', './', '.\\', '..'], true)) {
-                    throw new LogException('Protected folder cannot remove');
-                }
-
-                $this->rrmdir($config['folder']);
-            }
+            $this->rrmdir($folder, $deleteBaseFolder);
         }
     }
 
     /**
      * Recursive folder delete
      *
-     * @param  mixed $dir
+     * @param  string $dir
+     * @param  bool $deleteBaseFolder
      * @return void
      */
-    protected function rrmdir($dir)
+    protected function rrmdir($dir, $deleteBaseFolder = true)
     {
-
         $iterator = new RecursiveDirectoryIterator($dir, FilesystemIterator::SKIP_DOTS);
         $iterator = new RecursiveIteratorIterator($iterator, RecursiveIteratorIterator::CHILD_FIRST);
 
         foreach ($iterator as $file) {
-
             if ($file->isDir()) {
                 rmdir($file->getPathname());
             } else {
@@ -452,6 +473,8 @@ class Log
             }
         }
 
-        rmdir($dir);
+        if ($deleteBaseFolder) {
+            rmdir($dir);
+        }
     }
 }

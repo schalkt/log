@@ -20,6 +20,7 @@ A simple log system with pattern based path and messages. Objects and arrays are
 - pattern based rows: `{DATE} | {STATUS} --- {MESSAGE}`
 - objects and arrays converted to prettified JSON automatically
 - customizable CSV row pattern: `'"{DATE}";{MESSAGE};"{BACKTRACE.CLASS}";"{BACKTRACE.FUNCTION}"'`
+- logrotate not required due to the pattern-based log path
 - multiple log types in config
 
 ## Available log levels
@@ -155,19 +156,44 @@ return [
 
 ## Available variables in patterns
 
-- {MESSAGE} <- first parameter of function (required, string, array, object, any)
-- {TITLE} <- second parameter of function (not required, string or number)
-- {TYPE} <- came from log config
-- {STATUS} <- info, error, critical, warning, notice, debug, or exception
-- {REQUEST} <- dump $_REQUEST
-- {RAWBODY} <- file_get_contents('php://input')
-- {EOL} <- PHP_EOL
-- {DATE} <- date by config "format_date", default "Y-m-d H:i:s"
-- {YEAR} <- date('Y')
-- {MONTH} <- date('m')
-- {DAY} <- date('d')
-- {HOUR} <- date('H')
-- {MIN} <- date('i')
+- `{MESSAGE}` <- first parameter of function (required, string, array, object, any)
+- `{TITLE}` <- second parameter of function (not required, string or number)
+- `{TYPE}` <- came from log config
+- `{STATUS}` <- info, error, critical, warning, notice, debug, or exception
+- `{REQUEST}` <- dump $_REQUEST
+- `{RAWBODY}` <- file_get_contents('php://input')
+- `{EOL}` <- PHP_EOL
+- `{DATE}` <- date by config "format_date", default "Y-m-d H:i:s"
+- `{YEAR}` <- date('Y')
+- `{MONTH}` <- date('m')
+- `{DAY}` <- date('d')
+- `{HOUR}` <- date('H')
+- `{MIN}` <- date('i')
+- `{IP}`: Client's IP address.
+- `{USER_AGENT}`: User's browser user agent.
+- `{REQUEST_METHOD}`: HTTP request method (e.g., GET, POST).
+- `{REQUEST_URI}`: The requested URI.
+- `{SESSION_ID}`: Current session ID.
+- `{HOSTNAME}`: Server's hostname.
+- `{EXECUTION_TIME}`: Script execution time.
+- `{MEMORY_USAGE}`: Current memory usage.
+- `{MEMORY_PEAK_USAGE}`: Peak memory usage.
+
+### Flush Logs
+
+The `flush` method allows you to delete all log files under a specific log type's folder. By default, it also deletes the base folder. However, you can control this behavior by passing a boolean parameter to the method.
+
+#### Usage
+
+```php
+// Delete all log files and the base folder
+Log::to('custom')->flush();
+
+// Delete only the log files but keep the base folder
+Log::to('custom')->flush(false);
+```
+
+If the folder is protected (e.g., root directories like `./` or `../`), the method will throw a `LogException` to prevent accidental deletion.
 
 ## Todo
 
