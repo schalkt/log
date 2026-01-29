@@ -34,6 +34,8 @@ A simple log system with pattern based path and messages. Objects and arrays are
 - `Log::to()->notice($message, $title = null);`
 - `Log::to()->debug($message, $title = null);`
 - `Log::to()->exception(\Exception $ex, $title = null);`
+- `Log::to('import')->error('Unique id required');`
+- `Log::to('login')->notice($input, 'Invalid password');`
 
 ## Examples
 
