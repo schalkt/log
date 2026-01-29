@@ -4,15 +4,11 @@ A simple log system with pattern based path and messages. Objects and arrays are
 
 [![Latest Stable Version](https://poser.pugx.org/schalkt/log/v)](//packagist.org/packages/schalkt/log)
 [![Total Downloads](https://poser.pugx.org/schalkt/log/downloads)](//packagist.org/packages/schalkt/log)
+[![PHP Version](https://img.shields.io/packagist/php-v/schalkt/log.svg)](https://packagist.org/packages/schalkt/log)
 [![License](https://poser.pugx.org/schalkt/log/license)](//packagist.org/packages/schalkt/log)
 [![GitHub issues](https://img.shields.io/github/issues/schalkt/log.svg?style=flat-square)](https://github.com/schalkt/log/issues)
-[![Test](https://github.com/schalkt/log/actions/workflows/ci.yml/badge.svg)](https://github.com/schalkt/log/actions/workflows/ci.yml)
-[![Build Status](https://github.com/schalkt/log/actions/workflows/ci.yml/badge.svg)](https://github.com/schalkt/log/actions/workflows/ci.yml)
-[![Code Coverage](https://coveralls.io/repos/github/schalkt/log/badge.svg?branch=main)](https://coveralls.io/github/schalkt/log?branch=main)
-[![PHP Version](https://img.shields.io/packagist/php-v/schalkt/log.svg)](https://packagist.org/packages/schalkt/log)
+[![Build](https://github.com/schalkt/log/actions/workflows/ci.yml/badge.svg)](https://github.com/schalkt/log/actions/workflows/ci.yml)
 [![GitHub stars](https://img.shields.io/github/stars/schalkt/log.svg)](https://github.com/schalkt/log/stargazers)
-[![GitHub forks](https://img.shields.io/github/forks/schalkt/log.svg)](https://github.com/schalkt/log/network)
-[![GitHub contributors](https://img.shields.io/github/contributors/schalkt/log.svg)](https://github.com/schalkt/log/graphs/contributors)
 
 ## Install
 
